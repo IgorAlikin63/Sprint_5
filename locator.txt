@@ -1,0 +1,31 @@
+Локаторы через полный XPATH
+driver.find_element(By.XPATH, "/html/body/div/div/main/section[2]/div/button") - кнопка "войти в аккаунт"
+driver.find_element(By.XPATH, "/html/body/div/div/main/div/div/p[1]/a") - ссылка "Зарегистрироваться"
+driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[1]/div/div/input") - поле имя в форме "Регистрация"
+driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[2]/div/div/input") - поле email в форме "Регистрация"
+driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[3]/div/div/input") - поле пароль в форме "Регистрация"
+driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/button") - кнопка "Зарегистрироваться" в форме "Регистрация"
+driver.find_element(By.XPATH, "//button[text()='Выход']") - кнопка "Выход" в Личном кабинете
+
+Локаторы через сокращенный XPATH
+driver.find_element(By.XPATH, "//button[text()='Войти в аккаунт']") - кнопка "Войти в аккаунт" с сокращенным XPATH
+driver.find_element(By.XPATH, "//button[text()='Войти']") - кнопка "Войти" с сокращенным XPATH
+driver.find_element(By.XPATH, "//span[contains(@class,'text text_type_main-default') and contains(text(),'Начинки')]") - вкладка Начинки
+driver.find_element(By.XPATH, "//h2[contains(@class,'text text_type_main-medium mb-6 mt-10') and contains(text(),'Начинки')]") - заголовок Начинки в списке
+driver.find_element(By.XPATH, "//span[contains(@class,'text text_type_main-default') and contains(text(),'Соусы')]") - вкладка Соусы
+driver.find_element(By.XPATH, "//h2[contains(@class,'text text_type_main-medium mb-6 mt-10') and contains(text(),'Соусы')]") - заголовок Соусы в списке
+driver.find_element(By.XPATH, "//span[contains(@class,'text text_type_main-default') and contains(text(),'Булки')]") - вкладка Булки
+driver.find_element(By.XPATH, "//h2[contains(@class,'text text_type_main-medium mb-6 mt-10') and contains(text(),'Булки')]") - заголовок Булки в списке
+
+Локаторы через CSS_SELECTOR
+driver.find_element(By.CSS_SELECTOR, ".input__error").text - сообщение об ошибке, при вводе менее 6 символов в поле пароль
+driver.find_element(By.CSS_SELECTOR, "input[name='name']") - поле ввода email форма входа
+driver.find_element(By.CSS_SELECTOR, "input[name='Пароль']") - поле ввода пароль форма входа
+driver.find_element(By.CSS_SELECTOR, ".AppHeader_header__logo__2D0X2") - логотип Stellar Burgers
+
+Локатор через линк
+driver.find_element(By.LINK_TEXT, "Личный Кабинет") - ссылка на личный кабинет с главной страницы
+driver.find_element(By.LINK_TEXT, "Зарегистрироваться") - ссылка к разделу регистрации
+driver.find_element(By.LINK_TEXT, "Войти") - ссылка на форму входа из оаздела регистрации
+driver.find_element(By.LINK_TEXT, "Восстановить пароль") - ссылка на форму восстановления пароля
+driver.find_element(By.LINK_TEXT, "Конструктор") - ссылка на конструктор
