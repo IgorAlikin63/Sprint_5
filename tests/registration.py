@@ -1,75 +1,66 @@
-#Поле имя не пустое
-from selenium.webdriver.common.by import By
-from selenium import webdriver
+from conftest import driver
+from locators import StellarBurgersLocators
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from faker import Faker
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+class TestStellarBurgersRegistration:
 
-#переходим к разделу регистрации
-driver.find_element(By.XPATH, "/html/body/div/div/main/section[2]/div/button").click()
+    def test_registration_cant_be_empty_name_field(self, driver): #Поле имя не должно быть пустым
+        login_into_account_main_page_button = driver.find_element(*StellarBurgersLocators.LOGIN_INTO_ACCOUNT_MAIN_PAGE_BUTTON) #переходим к логину
+        login_into_account_main_page_button.click()
 
-#переходим к форме регистрации нового пользователя кликая на "Зарегистрироваться"
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/div/p[1]/a").click()
+        registration_link_for_new_user = driver.find_element(*StellarBurgersLocators.REGISTRATION_LINK_FOR_NEW_USER) #переходим к форме регистрации нового пользователя кликая на "Зарегистрироваться"
+        registration_link_for_new_user.click()
 
-#в форме регистрации не заполняем поле Имя, заполняем остальные и пробуем зарегистрироваться
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[2]/div/div/input").send_keys("privet123@gmail.com")
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[3]/div/div/input").send_keys("redstar123")
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/button").click()
+        email_input_in_registration_new_user_form = driver.find_element(*StellarBurgersLocators.EMAIL_INPUT_IN_REGISTRATION_NEW_USER_FORM) #заполняем поле почта
+        email_input_in_registration_new_user_form.send_keys("privet123@gmail.com")
 
-#проверяем, что не произошел переход на /login и мы все еще на /register
-assert driver.current_url != 'https://stellarburgers.nomoreparties.site/login'
+        password_input_in_registration_new_user_form = driver.find_element(*StellarBurgersLocators.PASSWORD_INPUT_IN_REGISTRATION_NEW_USER_FORM) #заполняем поле пароль
+        password_input_in_registration_new_user_form.send_keys("123456")
 
-# Закрой браузер
-driver.quit()
+        registration_button_in_new_user_form = driver.find_element(*StellarBurgersLocators.REGISTRATION_BUTTON_IN_NEW_USER_FORM) #кликаем на кнопку зарегистрироваться
+        registration_button_in_new_user_form.click()
 
-#Ошибка пароля менее 6ти символов
+        assert driver.current_url != 'https://stellarburgers.nomoreparties.site/login' #проверяем, что не произошел переход на /login и мы все еще на /register
 
-from selenium.webdriver.common.by import By
-from selenium import webdriver
+    def test_registration_error_with_less_then_6_simbols_password(self, driver): #Ошибка пароля менее 6ти символов
+        login_into_account_main_page_button = driver.find_element(*StellarBurgersLocators.LOGIN_INTO_ACCOUNT_MAIN_PAGE_BUTTON)  #переходим к логину
+        login_into_account_main_page_button.click()
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+        registration_link_for_new_user = driver.find_element(*StellarBurgersLocators.REGISTRATION_LINK_FOR_NEW_USER)  #переходим к форме регистрации нового пользователя кликая на "Зарегистрироваться"
+        registration_link_for_new_user.click()
 
-#переходим к разделу регистрации
-driver.find_element(By.XPATH, "/html/body/div/div/main/section[2]/div/button").click()
+        password_input_in_registration_new_user_form = driver.find_element(*StellarBurgersLocators.PASSWORD_INPUT_IN_REGISTRATION_NEW_USER_FORM)  #заполняем поле пароль
+        password_input_in_registration_new_user_form.send_keys("123")
 
-#переходим к форме регистрации нового пользователя кликая на "Зарегистрироваться"
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/div/p[1]/a").click()
+        registration_button_in_new_user_form = driver.find_element(*StellarBurgersLocators.REGISTRATION_BUTTON_IN_NEW_USER_FORM)  #кликаем на кнопку зарегистрироваться
+        registration_button_in_new_user_form.click()
 
-#в форме регистрации в поле пароля вводим менее 6ти символов
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[3]/div/div/input").send_keys("123")
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[2]/div/div/input").click()
+        assert driver.find_element(*StellarBurgersLocators.INCORRECT_PASSWORD_ERROR_TEXT).is_displayed() #проверяем отображается ли текст ошибки на экране
 
-#проверяем, что отобразилась ошибка
-assert 'Некорректный пароль' in driver.find_element(By.CSS_SELECTOR, ".input__error").text
+    def test_successfull_new_user_registration_with_correct_parameters(self, driver): #Корректная регистрация с верными данными
+        fake = Faker()
+        login_into_account_main_page_button = driver.find_element(*StellarBurgersLocators.LOGIN_INTO_ACCOUNT_MAIN_PAGE_BUTTON)  #переходим к логину
+        login_into_account_main_page_button.click()
 
-# Закрой браузер
-driver.quit()
+        registration_link_for_new_user = driver.find_element(*StellarBurgersLocators.REGISTRATION_LINK_FOR_NEW_USER)  #переходим к форме регистрации нового пользователя кликая на "Зарегистрироваться"
+        registration_link_for_new_user.click()
 
-#Корректная регистрация с верными данными
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-import time
+        name__input_in_registration_new_user_form = driver.find_element(*StellarBurgersLocators.NAME_INPUT_IN_REGISTRATION_NEW_USER_FORM) #заполняем поле имя
+        name__input_in_registration_new_user_form.send_keys(fake.name())
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+        email_input_in_registration_new_user_form = driver.find_element(*StellarBurgersLocators.EMAIL_INPUT_IN_REGISTRATION_NEW_USER_FORM)  #заполняем поле почта
+        email_input_in_registration_new_user_form.send_keys(fake.email())
 
-#переходим к разделу регистрации
-driver.find_element(By.XPATH, "/html/body/div/div/main/section[2]/div/button").click()
+        password_input_in_registration_new_user_form = driver.find_element(*StellarBurgersLocators.PASSWORD_INPUT_IN_REGISTRATION_NEW_USER_FORM)  #заполняем поле пароль
+        password_input_in_registration_new_user_form.send_keys("123456")
 
-#переходим к форме регистрации нового пользователя кликая на "Зарегистрироваться"
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/div/p[1]/a").click()
+        registration_button_in_new_user_form = driver.find_element(*StellarBurgersLocators.REGISTRATION_BUTTON_IN_NEW_USER_FORM)  #кликаем на кнопку зарегистрироваться
+        registration_button_in_new_user_form.click()
 
-#в форме регистрации не заполняем поле Имя, заполняем остальные и пробуем зарегистрироваться
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[1]/div/div/input").send_keys("Борис")
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[2]/div/div/input").send_keys("privet4122@gmail.com") #чтобы отработал корректно нужна новая почта, т.к. не может повторяться
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/fieldset[3]/div/div/input").send_keys("redstar123")
-driver.find_element(By.XPATH, "/html/body/div/div/main/div/form/button").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((StellarBurgersLocators.LOGIN_HEADER)))
 
-time.sleep(2)
+        assert driver.current_url == 'https://stellarburgers.nomoreparties.site/login'  #проверяем, что произошел переход на /login
 
-#проверяем, что произошел переход на /login
-assert driver.current_url == 'https://stellarburgers.nomoreparties.site/login'
 
-# Закрой браузер
-driver.quit()

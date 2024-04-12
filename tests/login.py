@@ -1,107 +1,87 @@
-#вход по кнопке «Войти в аккаунт» на главной
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-import time
+from conftest import driver
+from locators import StellarBurgersLocators
+from data import StellarBurgersUserData
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+class TestStellarBurgersUserLogin:
 
-#переходим ко входу в аккаунт
-driver.find_element(By.XPATH, "//button[text()='Войти в аккаунт']").click()
+    def test_login_with_main_page_button(self, driver):
+        login_into_account_main_page_button = driver.find_element(*StellarBurgersLocators.LOGIN_INTO_ACCOUNT_MAIN_PAGE_BUTTON)  #переходим к логину
+        login_into_account_main_page_button.click()
 
-#заполняем валидные данные для входа
-driver.find_element(By.CSS_SELECTOR, "input[name='name']").send_keys("igor_alikin_07_123@mail.ru")
-driver.find_element(By.CSS_SELECTOR, "input[name='Пароль']").send_keys("qwerty123")
-driver.find_element(By.XPATH, "//button[text()='Войти']").click()
+        lk_login_user_email = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_EMAIL)  # заполняем поле почта
+        lk_login_user_email.send_keys(*StellarBurgersUserData.AUTH_EMAIL)
 
-time.sleep(2)
+        lk_login_user_password = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_PASSWORD)  # заполняем поле пароль
+        lk_login_user_password.send_keys(*StellarBurgersUserData.AUTH_PASSWORD)
 
-#проверяем, что произошел переход на /login
-assert driver.current_url != 'https://stellarburgers.nomoreparties.site/login'
+        lk_login_user_button = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_BUTTON)  #кликаем на кнопку Войти
+        lk_login_user_button.click()
 
-# Закрой браузер
-driver.quit()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((StellarBurgersLocators.CREATE_NEW_ORDER_BUTTON)))
 
-#вход через кнопку «Личный кабинет»
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-import time
+        assert driver.find_element(*StellarBurgersLocators.CREATE_NEW_ORDER_BUTTON).is_displayed() #проверяем отображение кнопки "Оформить заказ" т.к. она появляется после успешного логина
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+    def test_login_with_lk_link(self, driver): #вход через кнопку «Личный кабинет»
+        lk_link_main_page = driver.find_element(*StellarBurgersLocators.LK_LINK_MAIN_PAGE)  # переходим в ЛК по линку Личный кабинет
+        lk_link_main_page.click()
 
-#переходим ко входу в аккаунт по клику на "Личный кабинет"
-driver.find_element(By.LINK_TEXT, "Личный Кабинет").click()
+        lk_login_user_email = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_EMAIL)  # заполняем поле почта
+        lk_login_user_email.send_keys(*StellarBurgersUserData.AUTH_EMAIL)
 
-#заполняем валидные данные для входа
-driver.find_element(By.CSS_SELECTOR, "input[name='name']").send_keys("igor_alikin_07_123@mail.ru")
-driver.find_element(By.CSS_SELECTOR, "input[name='Пароль']").send_keys("qwerty123")
-driver.find_element(By.XPATH, "//button[text()='Войти']").click()
+        lk_login_user_password = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_PASSWORD)  #заполняем поле пароль
+        lk_login_user_password.send_keys(*StellarBurgersUserData.AUTH_PASSWORD)
 
-time.sleep(2)
+        lk_login_user_button = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_BUTTON)  #кликаем на кнопку Войти
+        lk_login_user_button.click()
 
-#проверяем, что произошел переход на /login
-assert driver.current_url != 'https://stellarburgers.nomoreparties.site/login'
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((StellarBurgersLocators.CREATE_NEW_ORDER_BUTTON)))
 
-# Закрой браузер
-driver.quit()
+        assert driver.find_element(*StellarBurgersLocators.CREATE_NEW_ORDER_BUTTON).is_displayed()  #проверяем отображение кнопки "Оформить заказ" т.к. она появляется после успешного логина
 
-#вход через кнопку в форме регистрации
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-import time
+    def test_login_from_link_in_registration_form(self, driver): #вход через кнопку в форме регистрации
+        login_into_account_main_page_button = driver.find_element(*StellarBurgersLocators.LOGIN_INTO_ACCOUNT_MAIN_PAGE_BUTTON)  #переходим к логину
+        login_into_account_main_page_button.click()
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+        registration_link_for_new_user = driver.find_element(*StellarBurgersLocators.REGISTRATION_LINK_FOR_NEW_USER)  #переходим к форме регистрации нового пользователя кликая на "Зарегистрироваться"
+        registration_link_for_new_user.click()
 
-#переходим ко входу в аккаунт по клику на "Личный кабинет"
-driver.find_element(By.LINK_TEXT, "Личный Кабинет").click()
+        login_link_in_registration_form = driver.find_element(*StellarBurgersLocators.LOGIN_LINK_IN_REGISTRATION_FORM) #переходим по линку "Войти" в форме регистрации
+        login_link_in_registration_form.click()
 
-#переходим в раздел Зарегистрироваться
-driver.find_element(By.LINK_TEXT, "Зарегистрироваться").click()
+        lk_login_user_email = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_EMAIL)  #заполняем поле почта
+        lk_login_user_email.send_keys(*StellarBurgersUserData.AUTH_EMAIL)
 
-#переходим в раздел Зарегистрироваться
-driver.find_element(By.LINK_TEXT, "Войти").click()
+        lk_login_user_password = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_PASSWORD)  #заполняем поле пароль
+        lk_login_user_password.send_keys(*StellarBurgersUserData.AUTH_PASSWORD)
 
-#заполняем валидные данные для входа
-driver.find_element(By.CSS_SELECTOR, "input[name='name']").send_keys("igor_alikin_07_123@mail.ru")
-driver.find_element(By.CSS_SELECTOR, "input[name='Пароль']").send_keys("qwerty123")
-driver.find_element(By.XPATH, "//button[text()='Войти']").click()
+        lk_login_user_button = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_BUTTON)# кликаем на кнопку Войти
+        lk_login_user_button.click()
 
-time.sleep(2)
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((StellarBurgersLocators.CREATE_NEW_ORDER_BUTTON)))
 
-#проверяем, что произошел переход на /login
-assert driver.current_url != 'https://stellarburgers.nomoreparties.site/login'
+        assert driver.find_element(*StellarBurgersLocators.CREATE_NEW_ORDER_BUTTON).is_displayed() #проверяем отображение кнопки "Оформить заказ" т.к. она появляется после успешного логина
 
-# Закрой браузер
-driver.quit()
+    def test_login_from_link_in_remind_password_form(self, driver): #вход через кнопку восстановления пароля
+        login_into_account_main_page_button = driver.find_element(*StellarBurgersLocators.LOGIN_INTO_ACCOUNT_MAIN_PAGE_BUTTON)  #переходим к логину
+        login_into_account_main_page_button.click()
 
-#вход через кнопку восстановления пароля
-from selenium.webdriver.common.by import By
-from selenium import webdriver
-import time
+        remind_password_link_in_login_form = driver.find_element(*StellarBurgersLocators.REMIND_PASSWORD_LINK_IN_LOGIN_FORM) #переходим к форме восстановления пароля через линк "Восстановить пароль"
+        remind_password_link_in_login_form.click()
 
-driver = webdriver.Chrome()
-driver.get("https://stellarburgers.nomoreparties.site/")
+        login_link_in_remind_password_form = driver.find_element(*StellarBurgersLocators.LOGIN_LINK_IN_REMIND_PASSWORD_FORM) #переходим к форме входа через линк "Войти"
+        login_link_in_remind_password_form.click()
 
-#переходим ко входу в аккаунт по клику на "Личный кабинет"
-driver.find_element(By.LINK_TEXT, "Личный Кабинет").click()
+        lk_login_user_email = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_EMAIL)  # заполняем поле почта
+        lk_login_user_email.send_keys(*StellarBurgersUserData.AUTH_EMAIL)
 
-#переходим в раздел Восстановить пароль
-driver.find_element(By.LINK_TEXT, "Восстановить пароль").click()
+        lk_login_user_password = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_PASSWORD)  # заполняем поле пароль
+        lk_login_user_password.send_keys(*StellarBurgersUserData.AUTH_PASSWORD)
 
-#переходим в раздел Войти
-driver.find_element(By.LINK_TEXT, "Войти").click()
+        lk_login_user_button = driver.find_element(*StellarBurgersLocators.LK_LOGIN_USER_BUTTON)  # кликаем на кнопку Войти
+        lk_login_user_button.click()
 
-#заполняем валидные данные для входа
-driver.find_element(By.CSS_SELECTOR, "input[name='name']").send_keys("igor_alikin_07_123@mail.ru")
-driver.find_element(By.CSS_SELECTOR, "input[name='Пароль']").send_keys("qwerty123")
-driver.find_element(By.XPATH, "//button[text()='Войти']").click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((StellarBurgersLocators.CREATE_NEW_ORDER_BUTTON)))
 
-time.sleep(2)
-
-#проверяем, что произошел переход на /login
-assert driver.current_url != 'https://stellarburgers.nomoreparties.site/login'
-
-# Закрой браузер
-driver.quit()
+        assert driver.find_element(*StellarBurgersLocators.CREATE_NEW_ORDER_BUTTON).is_displayed() #проверяем отображение кнопки "Оформить заказ" т.к. она появляется после успешного логина
